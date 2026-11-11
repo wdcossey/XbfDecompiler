@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Threading;
 
-namespace XbfDecompiler
+namespace XbfDecompiler;
+
+public partial class App : Application
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    private void OnStartup(object sender, StartupEventArgs e)
     {
+        // Allow "XbfDecompiler.exe file.xbf", which also makes "Open with" and drag-onto-exe work.
+        new MainWindow(e.Args.FirstOrDefault()).Show();
+    }
+
+    private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        MessageBox.Show(MainWindow, e.Exception.ToString(), "Unexpected error", MessageBoxButton.OK, MessageBoxImage.Error);
+        e.Handled = true;
     }
 }

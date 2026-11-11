@@ -1,32 +1,49 @@
 ﻿<Window x:Class="XbfDecompiler.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:XbfDecompiler"
-        mc:Ignorable="d"
-        Title="XBF Decompiler" Height="480" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="36" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="2">
-            <Button Click="openFile" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                <Label>_Open</Label>
-            </Button>
-        </StackPanel>
-        <TreeView x:Name="xbfTree" Grid.Column="0" Grid.Row="1">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Display}" />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
-        <TextBox x:Name="xbfXml" Grid.Column="1" Grid.Row="1" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
-    </Grid>
+        Title="XBF Decompiler" Height="600" Width="1000"
+        AllowDrop="True" DragOver="OnDragOver" Drop="OnDrop">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="OnOpen" CanExecute="CanOpen" />
+        <CommandBinding Command="ApplicationCommands.Save" Executed="OnSave" CanExecute="HasDocument" />
+    </Window.CommandBindings>
+
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+            <Button Command="ApplicationCommands.Open" Content="_Open…" ToolTip="Open an XBF file (Ctrl+O)" />
+            <Button Command="ApplicationCommands.Save" Content="_Save XAML…" ToolTip="Save the decompiled XAML (Ctrl+S)" />
+            <Button x:Name="CopyButton" Click="OnCopyAll" IsEnabled="False"
+                    Content="_Copy XAML" ToolTip="Copy all of the decompiled XAML to the clipboard" />
+        </ToolBar>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Open or drop a Windows 8.1 / Windows Phone 8.1 .xbf file." />
+            </StatusBarItem>
+        </StatusBar>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="100" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="2*" MinWidth="100" />
+            </Grid.ColumnDefinitions>
+
+            <TreeView x:Name="XbfTree" Grid.Column="0">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Display}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                          ResizeBehavior="PreviousAndNext" />
+
+            <!-- Copy inside the box copies the selection; the toolbar's Copy XAML copies everything. -->
+            <TextBox x:Name="XamlText" Grid.Column="2" IsReadOnly="True" IsReadOnlyCaretVisible="True"
+                     FontFamily="Cascadia Mono, Consolas, Courier New" TextWrapping="NoWrap"
+                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+        </Grid>
+    </DockPanel>
 </Window>

@@ -1,19 +1,16 @@
-﻿using System;
-using System.IO;
+﻿namespace LibXbf.Records.Types;
 
-namespace LibXbf.Records.Types
+public readonly record struct TypeEntry(TypeFlags Flags, uint NamespaceId, uint StringId)
 {
-    public struct TypeEntry
-    {
-        public TypeFlags Flags { get; set; }
-        public uint NamespaceId { get; set; }
-        public uint StringId { get; set; }
-    }
+    internal const int Size = 12;
 
-    [Flags]
-    public enum TypeFlags
-    {
-        None = 0,
-        IsMarkupDirective = 1
-    }
+    internal static TypeEntry Read(BinaryReader br) =>
+        new((TypeFlags)br.ReadUInt32(), br.ReadUInt32(), br.ReadUInt32());
+}
+
+[Flags]
+public enum TypeFlags
+{
+    None = 0,
+    IsMarkupDirective = 1,
 }

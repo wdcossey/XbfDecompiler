@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace LibXbf.Records.Nodes;
 
-namespace LibXbf.Records.Nodes
+public sealed class XbfObject : XbfNode
 {
-    public class XbfObject : XbfNode
+    internal XbfObject(BinaryReader br)
+        : base(br)
     {
-        public List<XbfProperty> Properties { get; set; }
-
-        public XbfObject(BinaryReader br) : base (br)
-        {
-            Properties = new List<XbfProperty>();
-        }
     }
+
+    public List<XbfProperty> Properties { get; } = [];
+
+    /// <summary>
+    /// The object was not created by the markup but retrieved from its parent property; this is how collection
+    /// properties such as <c>Panel.Children</c> or <c>Style.Setters</c> are represented.
+    /// </summary>
+    public bool IsRetrieved => (Flags & 1) != 0;
 }

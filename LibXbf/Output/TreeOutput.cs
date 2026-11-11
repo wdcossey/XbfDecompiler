@@ -1,92 +1,54 @@
-﻿using LibXbf.Records.Nodes;
-using LibXbf.Records.Types;
-using System.Linq;
+using LibXbf.Records.Nodes;
 
-namespace LibXbf.Output
+namespace LibXbf.Output;
+
+public sealed record XbfTreeItem(string Display, IReadOnlyList<XbfTreeItem> Children)
 {
-    public class XbfTreeItem
+    public XbfTreeItem(string display)
+        : this(display, [])
     {
-        public string Display { get; set; }
-        public XbfTreeItem[] Children { get; set; }
+    }
+}
+
+/// <summary>Produces the object/property hierarchy of an <see cref="XbfFile"/>.</summary>
+public sealed class TreeOutput : IXbfOutput<XbfTreeItem>
+{
+    public XbfTreeItem GetOutput(XbfFile file)
+    {
+        ArgumentNullException.ThrowIfNull(file);
+        return DumpObject(file, file.RootNode);
     }
 
-    public class TreeOutput : IXbfOutput<XbfTreeItem>
+    private static XbfTreeItem DumpObject(XbfFile file, XbfObject obj)
     {
-        public XbfFile CurrentFile { get; private set; }
-
-        public XbfTreeItem GetOutput(XbfFile file)
+        string display = file.GetTypeInfo(obj.Id).Name;
+        if (obj.IsRetrieved)
         {
-            CurrentFile = file;
-
-            return DumpXbfObject(CurrentFile.RootNode);
+            display += " (retrieved)";
         }
 
-        private XbfTreeItem DumpXbfObject(XbfObject xo)
-        {
-            var obj = CurrentFile.TypeTable.Values[xo.Id];
-            string disp = CurrentFile.StringTable.Values[obj.StringId];
-
-            return new XbfTreeItem()
-            {
-                Display = disp,
-                Children = (from prop in xo.Properties
-                           select DumpXbfProperty(prop)).ToArray()
-            };
-        }
-
-        private XbfTreeItem DumpXbfProperty(XbfProperty xp)
-        {
-            var property = CurrentFile.PropertyTable.Values[xp.Id];
-            string disp = property.Flags.HasFlag(PropertyFlags.IsMarkupDirective) ?
-                            string.Format("x:{0}", CurrentFile.StringTable.Values[property.StringId]) :
-                            CurrentFile.StringTable.Values[property.StringId];
-
-            return new XbfTreeItem()
-            {
-                Display = disp,
-                Children = (from node in xp.Values
-                           select DumpXbfNode(node)).ToArray()
-            };
-        }
-
-        private XbfTreeItem DumpXbfText(XbfText xt)
-        {
-            string disp = CurrentFile.StringTable.Values[xt.Id];
-
-            return new XbfTreeItem()
-            {
-                Display = disp,
-                Children = null
-            };
-        }
-
-        private XbfTreeItem DumpXbfValue(XbfValue xv)
-        {
-            return new XbfTreeItem()
-            {
-                Display = string.Format("{0}: {1}", xv.Type, xv.Value),
-                Children = null
-            };
-        }
-
-        private XbfTreeItem DumpXbfNode(XbfNode xn)
-        {
-            if (xn is XbfObject)
-            {
-                return DumpXbfObject(xn as XbfObject);
-            }
-            else if (xn is XbfValue)
-            {
-                return DumpXbfValue(xn as XbfValue);
-            }
-            else if (xn is XbfText)
-            {
-                return DumpXbfText(xn as XbfText);
-            }
-            else
-            {
-                return null;
-            }
-        }
+        return new XbfTreeItem(display, [.. obj.Properties.Select(p => DumpProperty(file, p))]);
     }
+
+    private static XbfTreeItem DumpProperty(XbfFile file, XbfProperty xp)
+    {
+        XbfPropertyInfo property = file.GetPropertyInfo(xp.Id);
+        string name = property.IsDirective ? $"x:{property.Name}" : property.Name;
+
+        // Show simple values inline rather than as a single child.
+        if (xp.Values is [XbfText or XbfValue] && DumpNode(file, xp.Values[0]) is { } only)
+        {
+            return new XbfTreeItem($"{name} = {only.Display}");
+        }
+
+        return new XbfTreeItem(name, [.. xp.Values.Select(v => DumpNode(file, v)).OfType<XbfTreeItem>()]);
+    }
+
+    private static XbfTreeItem? DumpNode(XbfFile file, XbfNode node) => node switch
+    {
+        XbfObject obj => DumpObject(file, obj),
+        XbfText text => new XbfTreeItem($"\"{file.GetString(text.Id)}\""),
+        XbfValue val => new XbfTreeItem($"{val.Value} ({val.Type})"),
+        _ => null,
+    };
 }

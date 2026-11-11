@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+
+    <Company>Team Gnome</Company>
+    <Copyright>Copyright © Team Gnome, 2015</Copyright>
+    <Version>0.2.0</Version>
+  </PropertyGroup>
+</Project>

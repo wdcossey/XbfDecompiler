@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="LibXbf.Tests/LibXbf.Tests.csproj" />
+  <Project Path="LibXbf/LibXbf.csproj" />
+  <Project Path="XbfDecompiler/XbfDecompiler.csproj" />
+  <Project Path="XbfTool/XbfTool.csproj" />
+</Solution>
