@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace LibXbf.Records.Nodes;
 
-namespace LibXbf.Records.Nodes
+public sealed class XbfProperty : XbfNode
 {
-    public class XbfProperty : XbfNode
+    internal XbfProperty(BinaryReader br)
+        : base(br)
     {
-        public List<XbfNode> Values { get; set; }
-
-        public XbfProperty(BinaryReader br) : base(br)
-        {
-            Values = new List<XbfNode>();
-        }
     }
+
+    public List<XbfNode> Values { get; } = [];
 }

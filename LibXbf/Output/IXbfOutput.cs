@@ -1,7 +1,6 @@
-﻿namespace LibXbf.Output
+namespace LibXbf.Output;
+
+public interface IXbfOutput<out T>
 {
-    public interface IXbfOutput<T>
-    {
-        T GetOutput(XbfFile file);
-    }
+    T GetOutput(XbfFile file);
 }

@@ -1,8 +1,8 @@
-﻿namespace LibXbf.Records.Types
+﻿namespace LibXbf.Records.Types;
+
+public readonly record struct TypeNamespaceEntry(uint AssemblyId, uint StringId)
 {
-    public struct TypeNamespaceEntry
-    {
-        public uint AssemblyId { get; set; }
-        public uint StringId { get; set; }
-    }
+    internal const int Size = 8;
+
+    internal static TypeNamespaceEntry Read(BinaryReader br) => new(br.ReadUInt32(), br.ReadUInt32());
 }

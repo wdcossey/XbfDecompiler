@@ -1,33 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace LibXbf.Records.Nodes;
 
-namespace LibXbf.Records.Nodes
+public abstract class XbfNode
 {
-    public class XbfNode
+    /// <summary>Creates a node with the standard id/flags prefix read from <paramref name="br"/>.</summary>
+    private protected XbfNode(BinaryReader br)
     {
-        public uint Id { get; set; }
-        public uint Flags { get; set; }
-
-        public XbfLineInfo LineInfo { get; set; }
-
-        public XbfNode(BinaryReader br)
-        {
-            if (br == null)
-            {
-                // custom node format - as of today, currently only XbfValue
-                Id = 0;
-                Flags = 0;
-            }
-            else
-            {
-                // standard node
-                Id = br.ReadUInt32();
-                Flags = br.ReadUInt32();
-            }
-        }
+        Id = br.ReadUInt32();
+        Flags = br.ReadUInt32();
     }
+
+    /// <summary>Creates a node that has no id/flags prefix (currently only <see cref="XbfValue"/>).</summary>
+    private protected XbfNode()
+    {
+    }
+
+    /// <summary>
+    /// Index into the table relevant to the node type: the type table for objects, the property table for
+    /// properties, the string table for text and the XML namespace table for namespace declarations.
+    /// </summary>
+    public uint Id { get; }
+
+    public uint Flags { get; }
+
+    public XbfLineInfo LineInfo { get; internal set; }
 }

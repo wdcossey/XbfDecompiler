@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace LibXbf.Records.Nodes;
 
-namespace LibXbf.Records.Nodes
+/// <summary>An <c>xmlns</c> declaration; <see cref="XbfNode.Id"/> indexes the XML namespace table.</summary>
+public sealed class XbfNamespace : XbfNode
 {
-    public class XbfNamespace : XbfNode
+    internal XbfNamespace(BinaryReader br)
+        : base(br)
     {
-        public string Namespace { get; set; }
-
-        public XbfNamespace(BinaryReader br) : base(br)
-        {
-            uint length = br.ReadUInt32();
-
-            Namespace = new string(br.ReadChars((int)length));
-        }
+        Prefix = br.ReadUtf16String(br.ReadUInt32());
     }
+
+    /// <summary>The namespace prefix, or an empty string for the default namespace.</summary>
+    public string Prefix { get; }
 }

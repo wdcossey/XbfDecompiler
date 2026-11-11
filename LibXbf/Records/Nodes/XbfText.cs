@@ -1,12 +1,10 @@
-﻿using System.IO;
+namespace LibXbf.Records.Nodes;
 
-namespace LibXbf.Records.Nodes
+/// <summary>A literal string value; <see cref="XbfNode.Id"/> indexes the string table.</summary>
+public sealed class XbfText : XbfNode
 {
-    public class XbfText : XbfNode
+    internal XbfText(BinaryReader br)
+        : base(br)
     {
-        public XbfText(BinaryReader br) : base(br)
-        {
-
-        }
     }
 }
