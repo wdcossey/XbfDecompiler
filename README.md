@@ -14,7 +14,7 @@ the original company and copyright attribution.
 | `LibXbf` | The library: `XbfFile.Load`, `XamlOutput`, `JsonOutput`, `TreeOutput`, `MetadataOutput`, and `Pe.PeResource` (reads resources out of a DLL) |
 | `XbfTool` | `xbf`, the command-line tool |
 | `XbfDecompiler` | A WPF viewer: node tree, metadata and XAML side by side |
-| `LibXbf.Tests` | xUnit v3. The tests in `ReferenceFileTests` run on real Windows Phone 8.1 files and skip when they are missing (`XBF_SAMPLES_DIR`, default `R:\cornflower-reference\flash-vhd\system32`) |
+| `LibXbf.Tests` | xUnit v3. The tests in `ReferenceFileTests` run on real Windows Phone 8.1 files from the directory named by `XBF_SAMPLES_DIR`, and skip when it isn't set |
 
 ```sh
 dotnet build XbfDecompiler.slnx

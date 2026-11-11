@@ -5,20 +5,20 @@ namespace LibXbf.Tests;
 
 /// <summary>
 /// Runs the decompiler over real Windows Phone 8.1 XBF files. These are not redistributable, so the tests are
-/// skipped unless the directory in <c>XBF_SAMPLES_DIR</c> (or the default location below) exists.
+/// skipped unless <c>XBF_SAMPLES_DIR</c> names a directory holding them: <c>WINDOWS.UI.XAML.PHONE.DLL</c> from a
+/// Windows Phone 8.1 image, and the Button and AppBarButton templates extracted from it under the names below.
 /// </summary>
 public class ReferenceFileTests
 {
-    private const string DefaultSamplesDirectory = @"R:\cornflower-reference\flash-vhd\system32";
-
     private const string ButtonFile = "256-BUTTON.GENERIC.XBF-1033-WINDOWS.UI.XAML.PHONE.xbf";
     private const string AppBarButtonFile = "256-APPBARBUTTON.GENERIC.XBF-1033-WINDOWS.UI.XAML.PHONE.xbf";
 
     private static string SamplePath(string fileName)
     {
-        string directory = Environment.GetEnvironmentVariable("XBF_SAMPLES_DIR") ?? DefaultSamplesDirectory;
+        string? directory = Environment.GetEnvironmentVariable("XBF_SAMPLES_DIR");
+        Assert.SkipWhen(string.IsNullOrEmpty(directory), "XBF_SAMPLES_DIR is not set");
         string path = Path.Combine(directory, fileName);
-        Assert.SkipUnless(File.Exists(path), $"Sample file not found: {path} (set XBF_SAMPLES_DIR)");
+        Assert.SkipUnless(File.Exists(path), $"Sample file not found: {path}");
         return path;
     }
 

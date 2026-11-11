@@ -3,13 +3,13 @@
 # matching the patterns under System32 (language folders included, named "<folder>__<file>"), and dismounts.
 #
 # Run it on the reference VM, elevated, in Windows PowerShell 5.1:
-#   powershell -File extract-image.ps1                         # Update 1 image, the default file set
-#   powershell -File extract-image.ps1 -Image <...>\flash.vhd -Out C:\cornflower\flash-rtm
-#   powershell -File extract-image.ps1 -Files 'Windows\System32\ShellChrome.dll' -Patterns @()
+#   powershell -File extract-image.ps1 -Out C:\temp\wp81-u1        # Update 1 image, the default file set
+#   powershell -File extract-image.ps1 -Image <...>\flash.vhd -Out C:\temp\wp81-rtm
+#   powershell -File extract-image.ps1 -Out C:\temp\shell -Files 'Windows\System32\ShellChrome.dll' -Patterns @()
 # A running emulator that uses the image as its parent disk is not affected: the mount is read-only.
 param(
     [string]$Image = 'C:\Program Files (x86)\Microsoft SDKs\Windows Phone\v8.1\Emulation\Images\flash.update1.vhd',
-    [string]$Out = 'C:\cornflower\flash-update1',
+    [Parameter(Mandatory)] [string]$Out,
     [string[]]$Files = @(
         'Windows\System32\Windows.UI.Xaml.Phone.dll',
         'Windows\System32\Windows.UI.Xaml.dll',

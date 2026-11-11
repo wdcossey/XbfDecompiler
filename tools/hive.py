@@ -3,7 +3,7 @@ Read-only; needs no admin rights and no `reg load`. Handles REG_SZ, REG_EXPAND_S
 types print as hex.
 
 Usage: python hive.py <hive file> <regex on the key path>
-Example: python hive.py flash-update1/config/SOFTWARE "Control Panel.Theme"   (the 20 accents, both themes)"""
+Example: python hive.py SOFTWARE "Control Panel.Theme"   (a Windows Phone 8.1 SOFTWARE hive: its 20 accent colours)"""
 import re, struct, sys
 
 data = open(sys.argv[1], "rb").read()
