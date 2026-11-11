@@ -3,6 +3,12 @@
 Reads XAML Binary Format (XBF) **v1** files, the compiled XAML of Windows 8.1 and Windows Phone 8.1, and turns them back
 into XAML or into JSON. XBF v2 (Windows 10 and later) is detected and rejected.
 
+## Credits
+
+XBF Decompiler and LibXbf were written by **Team Gnome** (Thomas Hounsell), © 2015:
+<https://github.com/TeamGnome/XbfDecompiler> (archived). This fork modernises it and extends it. The assemblies keep
+the original company and copyright attribution.
+
 | Project | What it is |
 |---|---|
 | `LibXbf` | The library: `XbfFile.Load`, `XamlOutput`, `JsonOutput`, `TreeOutput`, `MetadataOutput`, and `Pe.PeResource` (reads resources out of a DLL) |
